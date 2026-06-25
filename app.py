@@ -277,14 +277,24 @@ if st.button("🔍 Verify News"):
         try:
 
             response = requests.post(
-                f"{API_URL}/verify",
-                json={
-                    "news_text": news_text
-                },
-                timeout=30
-            )
+            f"{API_URL}/verify",
+            json={"news_text": news_text},
+            timeout=60
+        )
 
-            result = response.json()
+            # Check if request succeeded
+            if response.status_code != 200:
+                st.error(f"API Error ({response.status_code})")
+                st.code(response.text)
+                st.stop()
+
+            # Ensure response is JSON
+            try:
+                result = response.json()
+            except Exception:
+                st.error("The API did not return valid JSON.")
+                st.code(response.text)
+                st.stop()
 
             prediction = result.get(
                 "prediction",
@@ -547,13 +557,11 @@ if st.button("🔍 Verify News"):
                 st.progress(
                     int(confidence)
                 )
+        except requests.exceptions.Timeout:
+            st.error("The API request timed out.")
+
+        except requests.exceptions.ConnectionError:
+            st.error("Unable to connect to the FastAPI server.")
 
         except Exception as e:
-
-            st.error(
-                f"API Connection Error: {e}"
-                )
-
-            st.info(
-                "Make sure FastAPI is running:\n\nuvicorn api:app --reload"
-                )
+            st.error(f"Unexpected Error: {str(e)}")
