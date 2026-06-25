@@ -1,7 +1,13 @@
 import streamlit as st
 import requests
 import sqlite3
+import os
 
+
+API_URL = os.getenv(
+    "API_URL",
+    "https://fake-news-detection-57zi.onrender.com"
+)
 # ==========================
 # DATABASE
 # ==========================
@@ -271,7 +277,7 @@ if st.button("🔍 Verify News"):
         try:
 
             response = requests.post(
-                "http://127.0.0.1:8000/verify",
+                f"{API_URL}/verify",
                 json={
                     "news_text": news_text
                 },
