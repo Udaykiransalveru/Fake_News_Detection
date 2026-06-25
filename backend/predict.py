@@ -4,13 +4,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-model = joblib.load(
-    BASE_DIR / "Models" / "best_model.jb"
-)
+MODEL_DIR = BASE_DIR / "models"
 
-vectorizer = joblib.load(
-    BASE_DIR / "Models" / "vectorizer.jb"
-)
+model = joblib.load(MODEL_DIR / "best_model.jb")
+vectorizer = joblib.load(MODEL_DIR / "vectorizer.jb")
 
 
 def clean_text(text):
